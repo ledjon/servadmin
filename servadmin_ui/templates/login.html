@@ -1,0 +1,57 @@
+<script language="JavaScript">
+	function loginOnSubmit( )
+	{
+		var o = document.getElementById('cmdLogin');
+
+		if(o)
+		{
+			o.disabled = true;
+			o.value = "Login in progress...";
+		}
+
+		return true;
+	}
+</script>
+<form action="{form_action}" method="post" onsubmit="return loginOnSubmit()">
+<table width="350" border="0" cellspacing="0" cellpadding="0" class="maintable">
+  <tr> 
+    <td colspan="2"> 
+      <div align="center"><b>Please Login</b></div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="50%"> 
+      <div align="right">Username:</div>
+    </td>
+    <td width="50%"> 
+      <input type="text" name="username" value="{v_username}" class="input" size="25">
+    </td>
+  </tr>
+  <tr> 
+    <td width="50%"> 
+      <div align="right">Password:</div>
+    </td>
+    <td width="50%"> 
+      <input type="password" name="password" class="input" size="25">
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="2"> 
+      <div align="center"> 
+        <input type="submit" name="cmdLogin" value="Continue" class="input">
+      </div>
+    </td>
+  </tr>
+</table>
+</form>
+
+<script language="JavaScript">
+	function _loginOnLoad( )
+	{
+		if(_findObj('username'))
+		{
+			_findObj('username').focus( );
+		}
+	}
+	window.attachEvent('onload', _loginOnLoad);
+</script>

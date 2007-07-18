@@ -1,0 +1,35 @@
+Welcome to LedHosting!
+
+Your site has been successfully created.  Below are the details pertaining
+to your site.
+
+* Login Details:
+Username: {username}
+Password: {password}
+
+* URL of your website:
+http://www.{domain}
+
+* Name Servers:
+{nameserver1}
+{nameserver2}
+
+* FTP Address:
+ftp.{domain} or {ftpuri}
+
+* Mail Servers:
+POP3: mail.{domain} or {mailservname}
+SMTP: smtp.{domain} or {smtpservname}
+
+* Control Panel:
+{cp_url}
+
+* Your site can temporarily be viewed at:
+{tmpurl}
+
+If you have any question, please don't hesitate to contact us.
+
+Regards,
+LedHosting.com Staff
+support@ledhosting.com
+http://www.ledhosting.com/
