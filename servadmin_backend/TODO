@@ -1,0 +1,20 @@
+# $Id: TODO,v 1.6 2005/11/26 04:13:32 ledjon Exp $
+# TODO List for servadmin_backend
+
+- Implement service keys (authentication) (DONE)
+
+- Stats/logs (awstats, most likely)
+
+- Add some type of 'suspend' system where:
+  a) Their account gets locked (password)
+  b) Their site becomes unavaible (point doc root to some 'disabled' page)
+
+- Add support for vpostfix (after I finish writting vpostfix!)
+
+- Add support for different dns service (perhaps tinydns?)
+
+- PostgreSQL support.
+
+- Site/Database backups
+
+- Add *lots* of validation on various inputs (in the works)

@@ -1,0 +1,16 @@
+#!/usr/local/bin/expect -df 
+
+# remove a crontab (stupid iteractive shit)
+
+if {$argc <= 0} {
+	send_user "Usage: $argv0 username\n";
+	exit
+}
+
+set user [lindex $argv 0];
+spawn /usr/bin/crontab -r -u $user
+
+expect "remove crontab for $user?" {
+	send "y\n"
+	send "\n";
+}

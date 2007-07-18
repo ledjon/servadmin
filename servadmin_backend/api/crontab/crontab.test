@@ -1,0 +1,2 @@
+# test crontab entry
+* * * * * /bin/cat /dev/null

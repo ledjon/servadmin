@@ -1,0 +1,33 @@
+#
+# Config file rebuilt by ServerAdmin
+# [2005-11-11 11:01:01]
+#
+
+# Creating entry for [test.com]
+<VirtualHost *:*>
+	ServerName test.com
+	DocumentRoot /usr/home/users/test/htdocs
+	ServerAlias www.test.com
+	ScriptAlias /cgi-bin /usr/home/users/test/htdocs/cgi-bin
+	ServerAdmin default@domain.ext
+</VirtualHost>
+
+# Creating entry for [halowar.com]
+<VirtualHost *:*>
+	ServerName halowar.com
+	DocumentRoot /usr/home/users/halowarc/htdocs
+	ServerAlias www.halowar.com
+	ScriptAlias /cgi-bin /usr/home/users/halowarc/htdocs/cgi-bin
+	ServerAdmin default@domain.ext
+</VirtualHost>
+
+# Creating entry for [eagles4167.com]
+<VirtualHost *:*>
+	ServerName eagles4167.com
+	DocumentRoot /usr/home/users/eagles41/htdocs
+	ServerAlias www.eagles4167.com
+	ScriptAlias /cgi-bin /usr/home/users/eagles41/htdocs/cgi-bin
+	ServerAdmin default@domain.ext
+</VirtualHost>
+
+# [3 records rebuilt in 0 second(s)]
