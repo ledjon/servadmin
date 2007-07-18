@@ -1,0 +1,35 @@
+#!/usr/local/bin/expect -df 
+
+# $Id: passwd.exp,v 1.3 2005/11/04 03:54:58 ledjon Exp $
+# exit codes:
+# 10 == good
+# 11 == timeout (bad)
+# anything else -- unknown
+#
+# you're also expected to grab output and look for stuff
+
+if {$argc <= 1} {
+	send_user "Usage: $argv0 username newpassword\n";
+	exit
+}
+
+set password [lindex $argv 1]
+
+spawn /usr/bin/passwd [lindex $argv 0]
+
+# assumes you're running as root
+# so it will try to force whatever you send
+while {1} {
+	expect -re "(password|Password):" {
+		send "$password\n"
+	} eof {
+		#send_user "eof!"
+		exit 10 
+	} timeout {
+		send_user "timeout"
+		exit 11
+	} else {
+		send_user "unknown error"
+		break
+	}
+}

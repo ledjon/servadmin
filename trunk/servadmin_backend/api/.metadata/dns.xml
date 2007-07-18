@@ -1,0 +1,24 @@
+<array _type="array">
+    <domains _type="array">
+        <footest1.com _type="array">
+            <ipaddr _type="string">192.168.1.160</ipaddr>
+            <mtime _type="integer">1131933466</mtime>
+            <ttl _type="integer">300</ttl>
+            <ns _type="array">
+                <unnamedItem _originalKey="0" _type="string">ns1.enhosting.com</unnamedItem>
+                <unnamedItem _originalKey="1" _type="string">ns2.enhosting.com</unnamedItem>
+            </ns>
+            <mx _type="array">
+                <unnamedItem _originalKey="10" _type="string">127.0.0.1</unnamedItem>
+            </mx>
+            <defaultip _type="string">127.0.0.1</defaultip>
+            <subdomains _type="array">
+                <realsub _type="NULL" />
+                <www _type="NULL" />
+            </subdomains>
+            <cnames _type="array">
+                <fakesub _type="string">realsub.footest1.com</fakesub>
+            </cnames>
+        </footest1.com>
+    </domains>
+</array>
