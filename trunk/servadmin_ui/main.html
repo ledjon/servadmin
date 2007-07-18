@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>ServAdmin - {section_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="Javascript">
+	// waiting image
+	var waitSpan = document.createElement('span');
+	waitSpan.innerHTML = " Loading, please wait...";
+
+	var waitImg = document.createElement('img');
+	//waitImg.src = "images/loading.gif";
+	waitImg.src = "images/wait.gif";
+	waitImg.height = 10;
+	waitImg.width = 88;
+
+	function animateLoading( )
+	{
+		var o1 = document.getElementById('spanWaitLogo');
+		var o2 = document.getElementById('spanWaitText');
+
+		if(!o1)
+		{
+			return;
+		}
+
+
+		o1.appendChild(waitImg);
+		o2.appendChild(waitSpan);
+
+
+		setTimeout(endWait, 3000);
+	}
+
+	function endWait( )
+	{
+		try
+		{
+			var o1 = document.getElementById('spanWaitLogo');
+			var o2 = document.getElementById('spanWaitText');
+			o1.removeChild(waitImg);
+			o2.removeChild(waitSpan);
+		}
+		catch(ex)
+		{
+			//alert('Exception: ' + ex);
+		}
+	}
+</script>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" link="990000" vlink="990000" alink="990000">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td background="images/header-slice.gif">
+      <table width="800" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+          <td width="0"><img src="images/logo.gif" width="259" height="90"></td>
+          <td width="100%" align="right" valign="top"><font color="FFCC65" face="Verdana, Arial, Helvetica, sans-serif" size="2">Logout<font color="#FFFFFF">
+            |</font> Help</font></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td background="images/menu-slice.gif">
+      <table width="800" border="0" cellspacing="0" cellpadding="0" background="images/menu-slice.gif" align="center">
+        <tr>
+                <td width="0"><img src="images/menu-slice.gif" width="10" height="29"></td>
+
+          <td width="100%"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+          <div style="disable">
+            <a href="#" onclick="animateLoading()">Account</a> | <a href="#" onclick="animateLoading()">Email</a> | <a href="#" onclick="animateLoading()">Databases</a>
+            | <a href="#" onclick="animateLoading()">Statistics &amp; Logs</a> | <a href="#" onclick="animateLoading()">Support</a></font></div></td>
+                <td width="0"><img src="images/menu-slice.gif" width="10" height="29"></td>
+              </tr>
+            </table>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="800" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+          <td width="260" valign="top">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+			<td width="0">
+				<span id="spanWaitLogo"></span>
+			</td>
+			<td width="100%" align="left">
+			<font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+				&nbsp;<span id="spanWaitText"></span>
+			</font>
+			</td>
+			</tr>
+			</table>
+            <table width="250" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td width="100%" background="images/box-background.gif" valign="top">
+                  <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Test
+                    text here<br>
+                    <font size="1">- <a href="#">My Option</a><br>
+                    - <a href="#">My Option2</a>
+					<br>&nbsp;</font></font></p>
+                  </td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+          </td>
+          <td valign="top" width="10"> <br>
+            <table width="1" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td><img src="images/pagediv-main.gif" width="1" height="150"></td>
+              </tr>
+              <tr>
+                <td><img src="images/pagediv-fader.gif" width="1" height="18"></td>
+              </tr>
+            </table>
+          </td>
+          <td valign="top" width="530"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">&nbsp;</font><table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td valign="top"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Main
+                  content will go here! Main content will go here!Main content
+                  will go here!Main content will go here!Main content will go
+                  here!Main content will go here!Main content will go here!Main
+                  content will go here!Main content will go here!</font></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<div align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Copyright
+  <a href="http://www.ledscripts.com/" target="_blank">Ledscripts.com</a>, 2005
+  </font></div>
+</body>
+</html>

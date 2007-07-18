@@ -1,0 +1,10 @@
+
+.input {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; background-color: #FFFFFF; border: 1px #000000 solid}
+
+.maintable { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-style: normal; background-color: E1E1E1; border: 1px #000000 solid; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px }
+
+.helptable { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-style: normal; background-color: E1E1E1; border: 1px #000000 solid; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px }
+
+.topcells { border: 1px #000000 solid; border-width: 0px 1px 1px 0px; }
+.topcellsRight { border: 1px #000000 solid; border-width: 0px 0px 1px 0px; }
+

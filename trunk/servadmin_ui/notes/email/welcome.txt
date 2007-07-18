@@ -1,0 +1,9 @@
+Welcome to the Email control panel!<br>
+<br>
+From here, you'll be able to do do the following functions:
+<ul>
+<li><b>Add / Delete Email Accounts</b> - Add new email accounts, or modify existing accounts.</li>
+<li><b>Default Address</b> - Change the address that default (non-defined address) delivers to.</li>
+<li><b>Email Forwards</b> - Create alias accounts that will forward to another email address.</li>
+</ul>
+If you have any additional needs, please contact our support staff.

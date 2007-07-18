@@ -1,0 +1,5 @@
+Changing your password here will affect the following accounts:<br>
+<li>FTP Login</li>
+<li>Control Panel Login (This Control Panel)</li>
+<br>
+It will <b>not</b> change any other passwords, including any email address or SQL Database users.

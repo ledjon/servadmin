@@ -1,0 +1,73 @@
+<head>
+<script language="Javascript" src="ajax_class.js"></script>
+<script language="JavaScript">
+	var ajax;
+
+	function doOnLoad()
+	{
+		ajax = new AJAX_Request( );
+		ajax.debug = 1; // this shouldn't affect the one called in doSomeEvent( )
+		//alert(ajax);
+	}
+
+	function doSomeEvent( )
+	{
+		//ajax.sendRequest( 'worker.php?a=b', myHandler );
+
+		var d = new AJAX_Data( );
+		//d.add('a', 'b\tasd=c');
+		//d.add('test', 'asdf');
+		//d.add('key', document.frmMain.textareaname.value);
+
+		d.from_form(document.frmMain);
+
+		// show how this can be serialized
+		//var s = new AJAX_Serializer( );
+		//var r = s.Serialize( d );
+		//var r = s.Deserialize( r );
+		// we aren't using this stuff though
+
+		// the part that matters
+		/*
+		var h = new AJAX_Handler( );
+
+		// sendRequest(url, new AJAX_Data(), myHandler);
+		h.sendRequest('worker.php', d, myHandler);
+		*/
+		
+		// 9/14/2005
+		aj_queue.Add('worker.php', d, myHandler);
+	}
+
+	function myHandler( data )
+	{
+		//alert('myHandler called: \n' + data);
+
+		try
+		{
+			//var h = new AJAX_Handler( );
+			//var d = h.ProcessResponse( data );
+
+			//document.frmMain.resultarea.value = d.get('key');
+
+			// auto-fill the form
+			data.to_form( document.frmMain );
+		}
+		catch(e)
+		{
+			alert('Exception: ' + e + ': ' + data);
+		}
+	}
+</script>
+</head>
+<body onload="doOnLoad()">
+<form name="frmMain">
+	<input type="hidden" name="hidden_element" value="my value is here">
+	<textarea name="textareaname"></textarea>
+
+	<hr size=1>
+	<a href="javascript:doSomeEvent()">Click me</a>
+	<hr size=1>
+	<textarea name="resultarea"></textarea>
+</form>
+</body>

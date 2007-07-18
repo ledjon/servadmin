@@ -1,0 +1,20 @@
+# $Id: TODO,v 1.6 2005/11/27 06:48:11 ledjon Exp $
+# TODO List for servadmin_ui
+
+- Support ticket system
+
+- Stats/Logs
+
+- Subdomain management
+
+- Contact Page (done)
+
+- Backup
+
+- Lots of user inputs (such as email address validation)
+
+- Crontab entries
+
+- Remember login / admin passthru login ability
+
+- v2.0 -- Wizard'iz things

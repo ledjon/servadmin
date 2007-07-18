@@ -1,0 +1,547 @@
+<html>
+<head>
+<title>ServAdmin - {section_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<link rel="stylesheet" href="css/servadmin.css" type="text/css">
+
+<script language="JavaScript" src="lib/ajax/datadumper.js"></script>
+<script language="JavaScript" src="js/common.js"></script>
+<script language="JavaScript" src="js/wizard.js"></script>
+<script language="JavaScript" src="js/genpassword.js"></script>
+<script language="JavaScript" src="lib/ajax/ajax_class.js"></script>
+<script language="Javascript">
+	var interface_page = '{interface_page}';
+	var action = '{first_action1}';
+
+	// waiting image
+	var waitSpan = document.createElement('span');
+	waitSpan.innerHTML = " Loading, please wait...";
+
+	var waitImg = document.createElement('img');
+	//waitImg.src = "images/loading.gif";
+	waitImg.src = "images/wait.gif";
+	waitImg.height = 10;
+	waitImg.width = 88;
+
+	function animateLoading( )
+	{
+		endWait( );
+		var o1 = document.getElementById('spanWaitLogo');
+		var o2 = document.getElementById('spanWaitText');
+
+		if(!o1)
+		{
+			return;
+		}
+
+
+		o1.appendChild(waitImg);
+		o2.appendChild(waitSpan);
+
+
+		// setTimeout(endWait, 3000);
+	}
+
+	function startWait( )
+	{
+		return animateLoading( );
+	}
+
+	function endWait( )
+	{
+		try
+		{
+			var o1 = document.getElementById('spanWaitLogo');
+			var o2 = document.getElementById('spanWaitText');
+			o1.removeChild(waitImg);
+			o2.removeChild(waitSpan);
+		}
+		catch(ex)
+		{
+			//alert('Exception: ' + ex);
+		}
+	}
+
+	function submitForm( frm )
+	{
+		if(typeof(frm) != 'object')
+		{
+			frm = _findObj(frm);
+		}
+
+		if(!frm)
+		{
+			alert("Unable to find form: " + frm);
+		}
+
+		// disable any submit button that might be here
+		var submit = _findObj('cmdSubmit');
+		if(submit)
+		{
+			submit.disabled = true;
+		}
+		
+		var d = new AJAX_Data( );
+		d.from_form(frm);
+		d.add('exec', 1);
+		d.add('a', action);
+		d.add('m', frm.action);
+
+		startWait( );
+		aj_queue.add(interface_page, d, submitFormHandler);
+	}
+
+	function submitFormHandler( d )
+	{
+		endWait( );
+		if(d.error)
+		{
+			//setContent('<font color="red">Error: ' + d.raw);
+			setError( d.raw );
+		}
+		else
+		{
+			setContent(d.get('content'));
+
+			var reload = d.get('reloadContent');
+
+			if(reload)
+			{
+				loadRight(action, reload);
+			}
+		}
+	}
+
+	function setContent( content )
+	{
+		var o = _findObj('divMain');
+
+		if(! o )
+		{
+			alert('Unable to find main div.');
+
+			return;
+		}
+
+		o.innerHTML = content;
+	}
+
+	function setError( msg )
+	{
+		setContent('<font color="red">Error: ' + msg +
+					'</font><br><br><small><b>You may need to contact support to help resolve this issue.</b></small>');
+	}
+
+	function loadRight(a, m, ext)
+	{
+		clearWizard( );
+		//alert('a: ' + a);
+		//alert('m: ' + m);
+		animateLoading( );
+		setContent('Please Wait...');
+
+		var d = new AJAX_Data( );
+		d.add('a', a);
+		d.add('m', m);
+
+		if(ext)
+		{
+			d.add('extra', ext);
+		}
+
+		aj_queue.add(interface_page, d, loadRightHandler);
+	}
+
+	function loadRightHandler( d )
+	{
+		endWait( );
+		if(d.error)
+		{
+			//setContent('<font color="red">Error: ' + d.raw);
+			setError(d.raw);
+			//alert('Error: ' + d.raw);
+			return;
+		}
+		
+		setContent(d.get('content'));
+
+		if(d.get('onLoad'))
+		{
+			eval(d.get('onLoad'));
+		}
+
+		var reload = d.get('reloadContent');
+
+		if(reload)
+		{
+			loadRight(action, reload);
+		}
+	}
+
+	function baseOnLoad( )
+	{
+		firstAction( );
+	}
+
+	function firstAction( )
+	{
+		var f1 = '{first_action1}';
+		var f2 = '{first_action2}';
+
+		if(f1 && f2)
+		{
+			loadRight(f1, f2);
+		}
+	}
+	
+	function findRealSubmit(obj)
+	{
+		var o = _findObj('cmdSubmit');
+
+		if(o)
+		{
+			o.click( );
+		}
+
+		return false;
+	}
+
+	function fixDomainName( obj )
+	{
+		obj.value = obj.value.toLowerCase( );
+
+		var val = obj.value.substring(0, 4);
+
+		if(val == 'www.')
+		{
+			obj.value = obj.value.substring(4);
+		}
+	}
+
+	function generateUsername( obj )
+	{
+		if(obj.value.length == 0)
+		{
+			return;
+		}
+
+		username = _findObj('username');
+
+		if(! username )
+		{
+			alert('Unable to find username object');
+
+			return;
+		}
+
+		if(username.value.length == 0)
+		{
+			// kick off process to find username
+			asyncGetUsername(obj.value);
+
+			username.value = '(Generating...)';
+		}
+	}
+
+	function asyncGetUsername( val )
+	{
+		var d = new AJAX_Data( );
+		d.add('a', action);
+		d.add('m', 'genusername');
+		d.add('initval', val);
+
+		aj_queue.add(interface_page, d, asyncGetUsernameHandler);
+	}
+
+	function asyncGetUsernameHandler( d )
+	{
+		if(d.error)
+		{
+			alert('Error getting username: ' + d.raw);
+			return;
+		}
+
+		var o = _findObj('username');
+
+		if(o)
+		{
+			o.value = d.get('content');
+		}
+		else
+		{
+			alert('Unable to find username object');
+		}
+	}
+	
+	function verifyNewUsername( obj )
+	{
+		if(obj.value == '')
+		{
+			return;
+		}
+		
+		// find the notice span
+		var o = _findObj('verifyUsernameSpan');
+
+		if(! o )
+		{
+			return;
+		}
+		o.innerHTML = "";
+
+		var d = new AJAX_Data( );
+		d.add('a', action);
+		d.add('m', 'verifyusername');
+		d.add('username', obj.value);
+
+		aj_queue.add(interface_page, d, verifyNewUsernameHandler);
+	}
+
+	function verifyNewUsernameHandler(d)
+	{
+		if(d.error)
+		{
+			alert(d.raw);
+			return;
+		}
+
+		if(d.get('content') == "good")
+		{
+			// nothing
+			//alert('seems good');
+		}
+		else
+		{
+			var o = _findObj('verifyUsernameSpan');
+			o.innerHTML = "Username taken!";
+			//alert(d.raw);
+		}
+	}
+
+	function generatePassword( name )
+	{
+		var obj = _findObj(name);
+
+		if(! obj )
+		{
+			alert('no password object');
+			return;
+		}
+
+		obj.value = getPassword(8, '', true, true, true, false, true, true, true, false);
+	}
+
+	function validateNewSite( )
+	{
+		var frm = _findObj( 'frmMain' );	
+
+		if(! frm )
+		{
+			alert('Unable to find form');
+			return;
+		}
+
+		// needed values
+
+		// owner name
+		if(frm.ownername.value.length == 0)
+		{
+			alert('Please fill in owner name.');
+			return false;
+		}
+
+		if(frm.email.value.length == 0)
+		{
+			alert('Please fill in the email address.');
+			return false;
+		}
+
+		// TODO : validate the input domain itself
+		if(frm.domain.value.length == 0)
+		{
+			alert('Please fill in the domain name.');
+			return false;
+		}
+
+		if(frm.username.value.length == 0)
+		{
+			alert('Please fill in the username.');
+			return false;
+		}
+
+		if(frm.password.value.length < 4)
+		{
+			alert('Please provide a password (at least 4 chars long)');
+			return false;
+		}
+
+		if(frm.servid.value == 0)
+		{
+			alert('Please select a server.');
+			return false;
+		}
+
+		return true;
+	}
+
+	function defineServerDefaults( obj )
+	{
+		if(! obj
+			|| obj.value.length == 0)
+		{
+			return;
+		}
+
+		var o = null;
+
+		if(o = _findObj('servurl'))
+		{
+			if(o.value.length == 0)
+				o.value = 'http://' + obj.value + ':81/%s.php';
+		}
+		if(o = _findObj('ftpuri'))
+		{
+			if(o.value.length == 0)
+				o.value = 'ftp.' + obj.value;
+		}
+		if(o = _findObj('nameserver1'))
+		{
+			if(o.value.length == 0)
+				o.value = 'ns1.' + obj.value;
+		}
+		if(o = _findObj('nameserver2'))
+		{
+			if(o.value.length == 0)
+				o.value = 'ns2.' + obj.value;
+		}
+		if(o = _findObj('mailservname'))
+		{
+			if(o.value.length == 0)
+				o.value = 'mail.' + obj.value;
+		}
+		if(o = _findObj('smtpservname'))
+		{
+			if(o.value.length == 0)
+				o.value = 'smtp.' + obj.value;
+		}
+		if(o = _findObj('tmpurl'))
+		{
+			if(o.value.length == 0)
+				o.value = 'http://' + obj.value + '/~%s/';
+		}
+	}
+
+</script>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" link="990000" vlink="990000" alink="990000" onload="baseOnLoad()">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td background="images/header-slice.gif">
+      <table width="750" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+          <td width="0"><img src="images/logo.gif" width="259" height="90"></td>
+          <td width="100%" align="right" valign="top"><font color="FFCC65" face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="{self}a=logout" style="color: #FFCC65;">Logout</a><font color="#FFFFFF">
+            |</font> Help</font></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td background="images/menu-slice.gif">
+      <table width="750" border="0" cellspacing="0" cellpadding="0" background="images/menu-slice.gif" align="center">
+        <tr>
+                <td width="0"><img src="images/menu-slice.gif" width="10" height="29"></td>
+
+          <td width="100%"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+          <div style="disable">
+			{top_menu}
+			<!--
+            <a href="#" onclick="animateLoading()">Account</a> | <a href="#" onclick="animateLoading()">Email</a> | <a href="#" onclick="animateLoading()">Databases</a>
+            | <a href="#" onclick="animateLoading()">Statistics &amp; Logs</a> | <a href="#" onclick="animateLoading()">Support</a>
+			--></font></div></td>
+                <td width="0"><img src="images/menu-slice.gif" width="10" height="29"></td>
+              </tr>
+            </table>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="750" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+          <td width="260" valign="top">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+			<td width="0">
+				<span id="spanWaitLogo"></span>
+			</td>
+			<td width="100%" align="left">
+			<font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+				&nbsp;<span id="spanWaitText"></span>
+			</font>
+			</td>
+			</tr>
+			</table>
+            <table width="250" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td width="100%" background="images/box-background.gif" valign="top">
+                  <p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">{left_menu}<br>&nbsp;</font></p>
+                  </td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+              <tr>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+                <td background="images/box-corner.gif"><img src="images/box-corner.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+          </td>
+          <td valign="top" width="10"> <br>
+            <table width="1" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td><img src="images/pagediv-main.gif" width="1" height="150"></td>
+              </tr>
+              <tr>
+                <td><img src="images/pagediv-fader.gif" width="1" height="18"></td>
+              </tr>
+            </table>
+          </td>
+          <td valign="top" width="530"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">&nbsp;</font><table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td valign="top">
+				<div id="divWizardPoint" name="divWizardPoint">
+				<font face="Verdana, Arial, Helvetica, sans-serif" size="2">
+				<table id="tblMain" name="tblMain" width="100%" border=0 cellspacing=0 cellpadding=0>
+				<tr>
+				<td>
+				<font face="Verdana, Arial, Helvetica, sans-serif" size="2">
+				<font color="red">{error}</font>
+					<div align="center">
+					{main_content}	
+					</div>
+				</font>
+				</td></tr></table>
+				</div>
+				</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<br>
+<div align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Copyright
+  <a href="http://www.ledscripts.com/" target="_blank">Ledscripts.com</a>, 2005
+  </font></div>
+</body>
+</html>
