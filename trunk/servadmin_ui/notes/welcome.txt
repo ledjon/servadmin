@@ -1,5 +1,5 @@
 Welcome to ServAdmin v0.5!
 <br><br>
-This system is <b>very</b> beta right now (not fully implemented or tested), so please bare with is if you experience problems.
+This system is <b>very</b> beta right now (not fully implemented or tested), so please bear with is if you experience problems.
 <hr size=1>
 Please report problems to <a href="mailto:support@ledhosting.com">LedHosting.com Support</a>
