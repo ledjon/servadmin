@@ -1,7 +1,7 @@
 <?
 	require_once(dirname(__FILE__) . '/nusoap.php');
 
-class ServAdminInterface extends soapclient
+class ServAdminInterface extends soap_client
 {
 	//var $location = 'http://localhost:81/admin/interface/%s.php';
 
@@ -10,7 +10,7 @@ class ServAdminInterface extends soapclient
 		//$this->location = sprintf($location, $type);
 		$this->location = sprintf($location, $type);
 
-		parent::soapclient($this->location, false);
+		parent::soap_client($this->location, false);
 	}
 
 	// generic soap fault exception handler

@@ -1,5 +1,5 @@
 <?
-	//var_dump($this->ajax->data);
+	//var_dump($self->ajax->data);
 	$mod = $this->ajax->data->Get('m');
 
 	$res = 'error (uknown)';
@@ -30,14 +30,14 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	return $this->getHelpNote('admin_start/welcome');
+	return $self->getHelpNote('admin_start/welcome');
 }
 
-function newserver( $this )
+function newserver( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
@@ -56,37 +56,37 @@ function newserver( $this )
 
 		foreach($parts as $key)
 		{
-			$args[$key] = $this->ajax->data->Get( $key );
+			$args[$key] = $self->ajax->data->Get( $key );
 		}
 
-		$this->db->AutoExecute( 'server', $args, 'INSERT' )
-			or $this->raiseError( $this->db->ErrorMsg( ) );
+		$self->db->AutoExecute( 'server', $args, 'INSERT' )
+			or $self->raiseError( $self->db->ErrorMsg( ) );
 
-		$this->ajax->response['reloadContent'] = 'modservers';
+		$self->ajax->response['reloadContent'] = 'modservers';
 
 		return "Completed...";
 	}
 	else
 	{
-		return _server_table( $this, array( ) );
+		return _server_table( $self, array( ) );
 	}
 }
 
-function modservers( $this )
+function modservers( $self )
 {
-	$ret = $this->tableHeader("Existing Servers");
+	$ret = $self->tableHeader("Existing Servers");
 
-	$res = $this->db->Execute("select serverid, servname from server order by servname")
-		or $this->raiseerror( $this->db->ErrorMsg( ) );
+	$res = $self->db->Execute("select serverid, servname from server order by servname")
+		or $self->raiseerror( $self->db->ErrorMsg( ) );
 
 	$tbl = '';
 	while($row = $res->FetchNextObj( ))
 	{
 		$tbl .=
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'DEL',
 						array(
@@ -97,9 +97,9 @@ function modservers( $this )
 					) . '&nbsp;] ',
 					array('width' => 2)
 				) .
-				$this->html->td(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'MOD',
 						array(
@@ -108,9 +108,9 @@ function modservers( $this )
 					) . '&nbsp;] ',
 					array('width' => 2)
 				) .
-				$this->html->td(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'PING',
 						array(
@@ -119,7 +119,7 @@ function modservers( $this )
 					) . '&nbsp;] ',
 					array('width' => 2)
 				) .
-				$this->html->td(
+				$self->html->td(
 					$row->servname
 				) 
 			);
@@ -128,20 +128,20 @@ function modservers( $this )
 	if($tbl)
 	{
 		$tbl =
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Delete',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Modify',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Ping',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Server Mame',
 					array('class' => 'topcells')
 				) 
@@ -149,7 +149,7 @@ function modservers( $this )
 			$tbl;
 		
 		$ret .=
-			$this->html->table(
+			$self->html->table(
 				$tbl, 
 				array('class' => 'maintable')
 			);
@@ -158,9 +158,9 @@ function modservers( $this )
 	return $ret;
 }
 
-function modserver( $this )
+function modserver( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
@@ -179,36 +179,36 @@ function modserver( $this )
 
 		foreach($parts as $key)
 		{
-			$args[$key] = $this->ajax->data->Get( $key );
+			$args[$key] = $self->ajax->data->Get( $key );
 		}
 
-		$this->db->AutoExecute( 'server', $args, 'UPDATE', 'serverid = ' . intval($this->ajax->data->Get('serverid')) )
-			or $this->raiseError( $this->db->ErrorMsg( ) );
+		$self->db->AutoExecute( 'server', $args, 'UPDATE', 'serverid = ' . intval($self->ajax->data->Get('serverid')) )
+			or $self->raiseError( $self->db->ErrorMsg( ) );
 
-		$this->ajax->response['reloadContent'] = 'modservers';
+		$self->ajax->response['reloadContent'] = 'modservers';
 
 		return "Completed...";
 	}
 	else
 	{
 		// select and display
-		$res = $this->db->Execute("select * from server where serverid = ?",
-				array( $this->ajax->data->Get('extra') )
-			) or $this->raiseError( $this->db->ErrorMsg( ) );
+		$res = $self->db->Execute("select * from server where serverid = ?",
+				array( $self->ajax->data->Get('extra') )
+			) or $self->raiseError( $self->db->ErrorMsg( ) );
 
 		$row = $res->FetchRow( );
 
 		$row['action'] = 'modserver';
 
-		return _server_table( $this, $row );
+		return _server_table( $self, $row );
 	}
 }
 
-function pingserver( $this )
+function pingserver( $self )
 {
-	$servid = $this->ajax->data->Get('extra');
+	$servid = $self->ajax->data->Get('extra');
 
-	$interface = $this->getInterface( 'ping', intval($servid) );
+	$interface = $self->getInterface( 'ping', intval($servid) );
 
 	if(! $interface )
 	{
@@ -222,7 +222,7 @@ function pingserver( $this )
 		($response == 'PONG' ? ' (Good)' : ' (Bad)');
 }
 
-function _server_table( $this, $args )
+function _server_table( $self, $args )
 {
 	$action = $args['action'];
 	if(! $action )
@@ -234,7 +234,7 @@ function _server_table( $this, $args )
 
 	// show html table
 	$ret = 
-		$this->html->form_start(
+		$self->html->form_start(
 			array(
 				'id'	=> 'frmMain',
 				'name'	=> 'frmMain',
@@ -242,16 +242,16 @@ function _server_table( $this, $args )
 				'onsubmit'	=> 'return findRealSubmit(this);'
 			)
 		) .
-		$this->tableHeader($is_new ? "Add New Server" : "Modify Server: " . $args['servname']) .
-		$this->html->hidden('serverid', array( 'value' => $args['serverid'] )) .
-		$this->html->table(
-			$this->html->tr(
-				$this->html->td(
+		$self->tableHeader($is_new ? "Add New Server" : "Modify Server: " . $args['servname']) .
+		$self->html->hidden('serverid', array( 'value' => $args['serverid'] )) .
+		$self->html->table(
+			$self->html->tr(
+				$self->html->td(
 					'Server Name',
 					array('width' => '50%')
 				) .
-				$this->html->td(
-					$this->html->textfield('servname',
+				$self->html->td(
+					$self->html->textfield('servname',
 						array(
 							'class'	=> 'input',
 							'size'	=> 30,
@@ -262,12 +262,12 @@ function _server_table( $this, $args )
 					array('width' => '50%')
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Server Auth Key'
 				) .
-				$this->html->td(
-					$this->html->textfield('servkey',
+				$self->html->td(
+					$self->html->textfield('servkey',
 						array(
 							'class'	=> 'input',
 							'size'	=> 25,
@@ -276,12 +276,12 @@ function _server_table( $this, $args )
 					) . ' [ <a href="javascript:void(0)" onclick="generatePassword(\'servkey\')">Generate</a> ]'
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Server Interface (API) URL'
 				) .
-				$this->html->td(
-					$this->html->textfield('servurl',
+				$self->html->td(
+					$self->html->textfield('servurl',
 						array(
 							'class'	=> 'input',
 							'size'	=> 30,
@@ -290,12 +290,12 @@ function _server_table( $this, $args )
 					)
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Default FTP URI'
 				) .
-				$this->html->td(
-					$this->html->textfield('ftpuri',
+				$self->html->td(
+					$self->html->textfield('ftpuri',
 						array(
 							'class'	=> 'input',
 							'size'	=> 25,
@@ -304,12 +304,12 @@ function _server_table( $this, $args )
 					) 
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Name Server #1'
 				) .
-				$this->html->td(
-					$this->html->textfield('nameserver1',
+				$self->html->td(
+					$self->html->textfield('nameserver1',
 						array(
 							'class'	=> 'input',
 							'size'	=> 30,
@@ -318,12 +318,12 @@ function _server_table( $this, $args )
 					) 
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Name Server #2'
 				) .
-				$this->html->td(
-					$this->html->textfield('nameserver2',
+				$self->html->td(
+					$self->html->textfield('nameserver2',
 						array(
 							'class'	=> 'input',
 							'size'	=> 30,
@@ -332,12 +332,12 @@ function _server_table( $this, $args )
 					) 
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Default Mail Server'
 				) .
-				$this->html->td(
-					$this->html->textfield('mailservname',
+				$self->html->td(
+					$self->html->textfield('mailservname',
 						array(
 							'class'	=> 'input',
 							'size'	=> 20,
@@ -346,12 +346,12 @@ function _server_table( $this, $args )
 					) 
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Default SMTP Server'
 				) .
-				$this->html->td(
-					$this->html->textfield('smtpservname',
+				$self->html->td(
+					$self->html->textfield('smtpservname',
 						array(
 							'class'	=> 'input',
 							'size'	=> 20,
@@ -360,12 +360,12 @@ function _server_table( $this, $args )
 					) 
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Temporary Site URL'
 				) .
-				$this->html->td(
-					$this->html->textfield('tmpurl',
+				$self->html->td(
+					$self->html->textfield('tmpurl',
 						array(
 							'class'	=> 'input',
 							'size'	=> 30,
@@ -378,17 +378,17 @@ function _server_table( $this, $args )
 			array('class' => 'maintable')
 		) .
 		'<hr size=1>' .
-		$this->tableHeader(
-			$this->ajaxSubmitButton('Submit Changes', 'frmMain')
+		$self->tableHeader(
+			$self->ajaxSubmitButton('Submit Changes', 'frmMain')
 		) .
-		$this->html->form_end( );
+		$self->html->form_end( );
 
 	// execute this after the page is showing
-	$this->ajax->response['onLoad'] = '_findObj(\'servname\').focus()';
+	$self->ajax->response['onLoad'] = '_findObj(\'servname\').focus()';
 	return $ret;
 }
 
-function delserver( $this )
+function delserver( $self )
 {
 	return "Not yet implemented (for security reasons) -- " .
 		" please delete it manually from the database if you *really* mean to do this!";

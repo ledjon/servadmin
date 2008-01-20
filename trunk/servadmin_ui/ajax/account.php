@@ -30,10 +30,10 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	$u = $this->userDetails( );
-	$interface = $this->getInterface('user');
+	$u = $self->userDetails( );
+	$interface = $self->getInterface('user');
 
 	/*
 	$interface->call('addUser', array( 'test' ) );
@@ -62,20 +62,20 @@ function welcome( $this )
 	
 	$has_shell = ($res['shell'] == '/sbin/nologin' ? false : true);
 	
-	$ret = $this->html->table(
-		$this->html->tr(
-			$this->html->td(
+	$ret = $self->html->table(
+		$self->html->tr(
+			$self->html->td(
 				'Home Directory:'
 			) .
-			$this->html->td(
+			$self->html->td(
 				$res['home']
 			)
 		) .
-		$this->html->tr(
-			$this->html->td(
+		$self->html->tr(
+			$self->html->td(
 				'SSH Shell:'
 			) .
-			$this->html->td(
+			$self->html->td(
 				$res['shell'] . 
 					($has_shell ? '' :
 						' (disabled)'
@@ -112,17 +112,17 @@ function welcome( $this )
 	return $ret;
 }
 
-function passwd( $this )
+function passwd( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
-		$u = $this->userDetails( );
-		$interface = $this->getInterface('user');
+		$u = $self->userDetails( );
+		$interface = $self->getInterface('user');
 
-		$p1 = trim($this->ajax->data->Get('newpass1'));
-		$p2 = trim($this->ajax->data->Get('newpass2'));
+		$p1 = trim($self->ajax->data->Get('newpass1'));
+		$p2 = trim($self->ajax->data->Get('newpass2'));
 
 		// add a check to make sure the password is secure enough
 		if(strlen($p1) < 6)
@@ -143,108 +143,108 @@ function passwd( $this )
 
 		// if we get this far, it went okay,
 		// so we need to update this in our database
-		$this->setUserDetail('password', md5($p1));
+		$self->setUserDetail('password', md5($p1));
 
 		return "Password successfully updated.";
 	}
 	else
 	{
 		$ret = 
-			$this->html->form_start(
+			$self->html->form_start(
 				array( 
 					'name'	=> 'frmPasswd',
 					'id'	=> 'frmPasswd',
 					'action'	=> 'passwd'
 				)
 			) .
-			$this->html->table(
-			$this->html->tr(
-				$this->html->td(
+			$self->html->table(
+			$self->html->tr(
+				$self->html->td(
 					'<center><b>Change Password</b>',
 					array('colspan' => '2')
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'New password:',
 					array('align' => 'right')
 				) .
-				$this->html->td(
-					$this->html->password_field(
+				$self->html->td(
+					$self->html->password_field(
 						'newpass1', 
 						array('class' => 'input')
 					)
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'New password again:',
 					array('align' => 'right')
 				) .
-				$this->html->td(
-					$this->html->password_field(
+				$self->html->td(
+					$self->html->password_field(
 						'newpass2', 
 						array('class' => 'input')
 					)
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
-					$this->ajaxSubmitButton('Change Password', 'frmPasswd'),
+			$self->html->tr(
+				$self->html->td(
+					$self->ajaxSubmitButton('Change Password', 'frmPasswd'),
 					array('colspan' => 2, 'align' => 'center')
 				)
 			)
 			,
 			array('class' => 'maintable', 'width' => '400')
 		) .
-		$this->html->form_end( ) .
-		$this->getHelpNote('account/passwd');
+		$self->html->form_end( ) .
+		$self->getHelpNote('account/passwd');
 
 		return $ret;
 	}
 }
 
-function contact( $this )
+function contact( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
 		// update values
-		if($name = $this->ajax->data->Get('ownername'))
+		if($name = $self->ajax->data->Get('ownername'))
 		{
-			$this->setUserDetail( 'ownername', $name );
+			$self->setUserDetail( 'ownername', $name );
 		}
 
-		if($email = $this->ajax->data->Get('email'))
+		if($email = $self->ajax->data->Get('email'))
 		{
-			$this->setUserDetail( 'email', $email );
+			$self->setUserDetail( 'email', $email );
 		}
 	
-		$this->ajax->response['reloadContent'] = 'contact';
+		$self->ajax->response['reloadContent'] = 'contact';
 		
 		return "Contact Details Updated...";
 	}
 	else
 	{
 		// list existing values
-		$u = $this->userDetails( );
+		$u = $self->userDetails( );
 
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 			array(
 				'id'	=> 'frmMain',
 				'name'	=> 'frmMain',
 				'action'	=> 'contact'
 			)
 		) .
-		$this->tableHeader("Update Contact Details") .
-		$this->html->table(
-			$this->html->tr(
-				$this->html->td(
+		$self->tableHeader("Update Contact Details") .
+		$self->html->table(
+			$self->html->tr(
+				$self->html->td(
 					'Contact Name:'
 				) .
-				$this->html->td(
-					$this->html->textfield('ownername',
+				$self->html->td(
+					$self->html->textfield('ownername',
 						array(	
 							'value' => $u->ownername,
 							'size'	=> 30,
@@ -253,12 +253,12 @@ function contact( $this )
 					)
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Contact Email:'
 				) .
-				$this->html->td(
-					$this->html->textfield('email',
+				$self->html->td(
+					$self->html->textfield('email',
 						array(	
 							'value' => $u->email,
 							'size'	=> 20,
@@ -270,42 +270,42 @@ function contact( $this )
 			array('class' => 'maintable')
 		) .
 		'<hr size=1>' .
-		$this->tableHeader(
-			$this->ajaxSubmitButton("Save Changes", "frmMain")
+		$self->tableHeader(
+			$self->ajaxSubmitButton("Save Changes", "frmMain")
 		) .
-		$this->html->form_end( );
+		$self->html->form_end( );
 
 		return $ret;
 	}
 }
 
-function crontab( $this )
+function crontab( $self )
 {
-	$interface = $this->getInterface( 'crontab' );
-	$u = $this->userDetails( );
+	$interface = $self->getInterface( 'crontab' );
+	$u = $self->userDetails( );
 
-	if($this->ajax->data->Get('exec'))
+	if($self->ajax->data->Get('exec'))
 	{
 		// save changes
-		$keys = $this->ajax->data->Keys( );
+		$keys = $self->ajax->data->Keys( );
 
 		$final = array( );
-		foreach($this->matchKeys( $keys, '/^command_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^command_(.*)$/' ) as $k)
 		{
 			$k = intval($k);
 
 			// delete (skip) this entry?
-			if($this->ajax->data->Get('del_' . $k))
+			if($self->ajax->data->Get('del_' . $k))
 			{
 				continue;
 			}
 
-			$min = $this->ajax->data->Get('minute_' . $k);
-			$hour = $this->ajax->data->Get('hour_' . $k);
-			$day = $this->ajax->data->Get('day_' . $k);
-			$month = $this->ajax->data->Get('month_' . $k);
-			$weekday = $this->ajax->data->Get('weekday_' . $k);
-			$command = $this->ajax->data->Get('command_' . $k);
+			$min = $self->ajax->data->Get('minute_' . $k);
+			$hour = $self->ajax->data->Get('hour_' . $k);
+			$day = $self->ajax->data->Get('day_' . $k);
+			$month = $self->ajax->data->Get('month_' . $k);
+			$weekday = $self->ajax->data->Get('weekday_' . $k);
+			$command = $self->ajax->data->Get('command_' . $k);
 
 			// echo implode(':', array( $min, $hour, $day, $month, $weekday, $command ));
 			// exit;
@@ -339,11 +339,11 @@ function crontab( $this )
 		$interface->checkFault( );
 
 		// set emailto
-		$interface->call('setEmailTo', array( $u->username, $this->ajax->data->Get('emailto') ));
+		$interface->call('setEmailTo', array( $u->username, $self->ajax->data->Get('emailto') ));
 		$interface->checkFault( );
 
 		// this tells it to reload the page (right side) with something
-		$this->ajax->response['reloadContent'] = 'crontab';
+		$self->ajax->response['reloadContent'] = 'crontab';
 
 		return "Completed...";
 	}
@@ -383,10 +383,10 @@ function crontab( $this )
 		$tbl = '';
 		foreach($items as $i => $item)
 		{
-			$tbl .= $this->html->tr(
-				$this->html->td(
+			$tbl .= $self->html->tr(
+				$self->html->td(
 					( $item['command'] ?
-						$this->html->checkbox('del_' . $i,
+						$self->html->checkbox('del_' . $i,
 							array(
 								'value'	=> '1'
 							)
@@ -396,8 +396,8 @@ function crontab( $this )
 					,
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('minute_' . $i,
+				$self->html->td(
+					$self->html->textfield('minute_' . $i,
 						array(
 							'value' => $item['minute'],
 							'size' => 2,
@@ -406,8 +406,8 @@ function crontab( $this )
 					),
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('hour_' . $i,
+				$self->html->td(
+					$self->html->textfield('hour_' . $i,
 						array(
 							'value' => $item['hour'],
 							'size' => 2,
@@ -416,8 +416,8 @@ function crontab( $this )
 					),
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('day_' . $i,
+				$self->html->td(
+					$self->html->textfield('day_' . $i,
 						array(
 							'value' => $item['day'],
 							'size' => 2,
@@ -426,8 +426,8 @@ function crontab( $this )
 					),
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('month_' . $i,
+				$self->html->td(
+					$self->html->textfield('month_' . $i,
 						array(
 							'value' => $item['month'],
 							'size' => 2,
@@ -436,8 +436,8 @@ function crontab( $this )
 					),
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('weekday_' . $i,
+				$self->html->td(
+					$self->html->textfield('weekday_' . $i,
 						array(
 							'value' => $item['weekday'],
 							'size' => 2,
@@ -446,8 +446,8 @@ function crontab( $this )
 					),
 					array('width' => '0')
 				) .
-				$this->html->td(
-					$this->html->textfield('command_' . $i,
+				$self->html->td(
+					$self->html->textfield('command_' . $i,
 						array(
 							'value' => $item['command'],
 							'size' => 55,
@@ -459,33 +459,33 @@ function crontab( $this )
 			);
 		}
 
-		$tbl = $this->html->tr(
-			$this->html->td(
+		$tbl = $self->html->tr(
+			$self->html->td(
 				'DEL'
 				,
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'MN',
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'HR',
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'DY',
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'MN',
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'WD',
 				array('width' => '0', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'Command to Execute',
 				array('width' => '100%', 'class' => 'topcellsRight')
 			) 
@@ -493,21 +493,21 @@ function crontab( $this )
 		$tbl;
 
 		$ret =
-			$this->html->form_start(
+			$self->html->form_start(
 				array(
 					'id'	=> 'frmMain',
 					'name'	=> 'frmMain',
 					'action'	=> 'crontab'
 				)
 			) .
-			$this->tableHeader("Manage Crontab Entries") .
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->tableHeader("Manage Crontab Entries") .
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Ouput emailed to:'
 					) .
-					$this->html->td(
-						$this->html->textfield('emailto', 
+					$self->html->td(
+						$self->html->textfield('emailto', 
 							array(
 								'value'	=> $emailTo,
 								'class'	=> 'input',
@@ -518,15 +518,15 @@ function crontab( $this )
 				),
 				array('class' => 'maintable')
 			) .
-			$this->html->table(
+			$self->html->table(
 				$tbl,
 				array('class' => 'maintable')
 			) .
 			'<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton("Save Crontab Changes", 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton("Save Crontab Changes", 'frmMain')
 			);
-			$this->html->form_end( );
+			$self->html->form_end( );
 
 
 		return $ret;

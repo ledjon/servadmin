@@ -23,7 +23,7 @@ $config = array(
 		'user'	=> 'servadmin',
 		'pass'	=> 'servadmin',
 		'db'	=> 'servadmin',
-		'host'	=> 'localhost'
+		'host'	=> 'young'
 	),
 	'admin'	=> array( 'ledjon', 'root', 'brandon' )
 );

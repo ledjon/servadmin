@@ -24,27 +24,27 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	return $this->getHelpNote('database/welcome');
+	return $self->getHelpNote('database/welcome');
 }
 
-function myusers( $this )
+function myusers( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
-	$u = $this->userDetails( );
-	$interface = $this->getInterface('mysql');
+	$u = $self->userDetails( );
+	$interface = $self->getInterface('mysql');
 
 	if($exec)
 	{
 		// executing
-		//var_dump($this->ajax->data);
+		//var_dump($self->ajax->data);
 		//die("did submit");
-		$keys = $this->ajax->data->Keys( );
+		$keys = $self->ajax->data->Keys( );
 
-		if($user = $this->ajax->data->Get('new_user')
-			and $pass = $this->ajax->data->Get('new_password')
+		if($user = $self->ajax->data->Get('new_user')
+			and $pass = $self->ajax->data->Get('new_password')
 		)
 		{
 			//die("user: $user");
@@ -53,11 +53,11 @@ function myusers( $this )
 		}
 
 		// changed passwords?
-		foreach($this->matchKeys( $keys, '/^newpass_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^newpass_(.*)$/' ) as $k)
 		{
 			// change password
 			$key = 'newpass_' . $k;
-			if($pass = $this->ajax->data->Get($key))
+			if($pass = $self->ajax->data->Get($key))
 			{
 				$pass = trim($pass);
 
@@ -67,7 +67,7 @@ function myusers( $this )
 		}
 
 		// deleted users?
-		foreach($this->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
 		{
 			if($k)
 			{
@@ -77,7 +77,7 @@ function myusers( $this )
 		}
 
 		// this tells it to reload the page (right side) with something
-		$this->ajax->response['reloadContent'] = 'myusers';
+		$self->ajax->response['reloadContent'] = 'myusers';
 
 		return "Completed...";
 	}
@@ -97,9 +97,9 @@ function myusers( $this )
 			foreach($res as $user)
 			{
 				//$ret .= sprintf("%s@%s<br>", $user, $u->domain);
-				$tbl .= $this->html->tr(
-					$this->html->td(
-						$this->html->checkbox('del_' . $user, 1, false,
+				$tbl .= $self->html->tr(
+					$self->html->td(
+						$self->html->checkbox('del_' . $user, 1, false,
 							array(
 								'onclick'	=> 
 									'if(this.checked) { return confirm(\'Are you sure you want to delete this user?\') }'
@@ -107,12 +107,12 @@ function myusers( $this )
 						),
 						array('width' => 0)
 					) .
-					$this->html->td(
+					$self->html->td(
 						$user,
 						array('width' => '50%')
 					) .
-					$this->html->td(
-						$this->html->password_field('newpass_' . $user, 
+					$self->html->td(
+						$self->html->password_field('newpass_' . $user, 
 							array(
 								'class' => 'input'
 							)
@@ -126,50 +126,50 @@ function myusers( $this )
 			{
 				// header
 				$tbl = 
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'DEL&nbsp;',	
 						array('width' => 0, 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Database User',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'New Passowrd',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					)
 				) . $tbl;
 
-				$tbl = $this->html->table(
+				$tbl = $self->html->table(
 					$tbl,
 					array('class' => 'maintable')
 				);
 			}
 			
-			$ret .= $this->tableHeader("Existing Database Users") . $tbl . '<hr size=1>';
+			$ret .= $self->tableHeader("Existing Database Users") . $tbl . '<hr size=1>';
 		}
 
 		// new accounts
 		$ret .=
-			$this->tableHeader("New Database User");
+			$self->tableHeader("New Database User");
 
 		$ret .=
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Database Username',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Password',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						$u->username . '_' .
-						$this->html->textfield('new_user', 
+						$self->html->textfield('new_user', 
 							array(
 								'class' => 'input',
 								'size'	=> '10',
@@ -177,8 +177,8 @@ function myusers( $this )
 							)
 						)
 					) .
-					$this->html->td(
-						$this->html->password_field('new_password',
+					$self->html->td(
+						$self->html->password_field('new_password',
 							array(
 								'class'	=> 'input',
 								'size'	=> '30'
@@ -191,12 +191,12 @@ function myusers( $this )
 
 		// submit button
 		$ret .= '<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Save Changes', 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Save Changes', 'frmMain')
 			);
 
 		// wrap it in a form
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 					array(
 						'name'	=> 'frmMain',
 						'id'	=> 'frmMain',
@@ -204,27 +204,27 @@ function myusers( $this )
 						'onsubmit'	=> 'return findRealSubmit(this);'
 					)
 				) . $ret .
-				$this->html->form_end( );
+				$self->html->form_end( );
 
 		return $ret;
 	}
 }
 
-function mydatabases( $this )
+function mydatabases( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
-	$u = $this->userDetails( );
-	$interface = $this->getInterface('mysql');
+	$u = $self->userDetails( );
+	$interface = $self->getInterface('mysql');
 
 	if($exec)
 	{
 		// executing
-		//var_dump($this->ajax->data);
+		//var_dump($self->ajax->data);
 		//die("did submit");
-		$keys = $this->ajax->data->Keys( );
+		$keys = $self->ajax->data->Keys( );
 
-		if($newdb = $this->ajax->data->Get('new_database'))
+		if($newdb = $self->ajax->data->Get('new_database'))
 		{
 			//die("user: $user");
 			$interface->call('createDatabase', array( $u->username . '_' . $newdb ));	
@@ -232,7 +232,7 @@ function mydatabases( $this )
 		}
 
 		// revoke access
-		foreach($this->matchKeys( $keys, '/^revoke_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^revoke_(.*)$/' ) as $k)
 		{
 			list($db, $user) = explode(':', $k);
 			
@@ -241,11 +241,11 @@ function mydatabases( $this )
 		}
 
 		// grant access
-		foreach($this->matchKeys( $keys, '/^grant_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^grant_(.*)$/' ) as $k)
 		{
 			$key = 'grant_' . $k;
 
-			if($user = trim($this->ajax->data->Get($key)))
+			if($user = trim($self->ajax->data->Get($key)))
 			{
 				$interface->call('grantAccess', array( $user, $k ));
 				$interface->checkFault( );
@@ -253,7 +253,7 @@ function mydatabases( $this )
 		}
 		
 		// delete databases?
-		foreach($this->matchKeys( $keys, '/^deldb_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^deldb_(.*)$/' ) as $k)
 		{
 			if($k)
 			{
@@ -263,7 +263,7 @@ function mydatabases( $this )
 		}
 
 		// this tells it to reload the page (right side) with something
-		$this->ajax->response['reloadContent'] = 'mydatabases';
+		$self->ajax->response['reloadContent'] = 'mydatabases';
 
 		return "Completed...";
 	}
@@ -313,7 +313,7 @@ function mydatabases( $this )
 					foreach($users as $user)
 					{
 						$existing_users .= 
-							$this->html->checkbox('revoke_' . $db . ':' . $user, 1, false) .
+							$self->html->checkbox('revoke_' . $db . ':' . $user, 1, false) .
 							' ' . $user . '<br>';
 					}
 				}
@@ -327,7 +327,7 @@ function mydatabases( $this )
 					$users_need_access[$us] = $us;
 				}
 				// make a dropdown of users not in the database
-				$need_access = $this->html->popup_menu('grant_' . $db,
+				$need_access = $self->html->popup_menu('grant_' . $db,
 								array_merge(
 									array('' => '--Select User--'),
 									$users_need_access
@@ -343,9 +343,9 @@ function mydatabases( $this )
 				//var_dump($users);
 				//exit;
 
-				$tbl .= $this->html->tr(
-					$this->html->td(
-						$this->html->checkbox('deldb_' . $db, 1, false,
+				$tbl .= $self->html->tr(
+					$self->html->td(
+						$self->html->checkbox('deldb_' . $db, 1, false,
 							array(
 								'onclick'	=> 
 									'if(this.checked) { return confirm(\'Are you sure you want to delete this database?\') }'
@@ -353,17 +353,17 @@ function mydatabases( $this )
 						),
 						array('width' => 0, 'valign' => 'center')
 					) .
-					$this->html->td(
+					$self->html->td(
 						$db,
 						array('width' => '33%', 'valign' => 'center')
 					) .
-					$this->html->td(
+					$self->html->td(
 						// current users
 						$existing_users
 						,
 						array('width' => '33%')
 					) .
-					$this->html->td(
+					$self->html->td(
 						$need_access
 						,
 						array('width' => '33%')
@@ -377,50 +377,50 @@ function mydatabases( $this )
 			{
 				// header
 				$tbl = 
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'DEL&nbsp;',	
 						array('width' => 0, 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Database Name',
 						array('width' => '33%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Current Users (Revoke)',
 						array('width' => '33%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'New User (Grant)',
 						array('width' => '33%', 'class' => 'topcellsRight')
 					)
 				) . $tbl;
 
-				$tbl = $this->html->table(
+				$tbl = $self->html->table(
 					$tbl,
 					array('class' => 'maintable')
 				);
 			}
 			
-			$ret .= $this->tableHeader("Existing Database Access Lists") . $tbl . '<hr size=1>';
+			$ret .= $self->tableHeader("Existing Database Access Lists") . $tbl . '<hr size=1>';
 		}
 
 		// new accounts
 		$ret .=
-			$this->tableHeader("Create New Database");
+			$self->tableHeader("Create New Database");
 
 		$ret .=
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Database Name',
 						array('width' => '100%', 'class' => 'topcellsRight', 'align' => 'center')
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						$u->username . '_' .
-						$this->html->textfield('new_database', 
+						$self->html->textfield('new_database', 
 							array(
 								'class' => 'input',
 								'size'	=> '10'
@@ -434,12 +434,12 @@ function mydatabases( $this )
 
 		// submit button
 		$ret .= '<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Save Changes', 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Save Changes', 'frmMain')
 			);
 
 		// wrap it in a form
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 					array(
 						'name'	=> 'frmMain',
 						'id'	=> 'frmMain',
@@ -447,8 +447,10 @@ function mydatabases( $this )
 						'onsubmit'	=> 'return findRealSubmit(this);'
 					)
 				) . $ret .
-				$this->html->form_end( );
+				$self->html->form_end( );
 
 		return $ret;
 	}
 }
+
+?>
