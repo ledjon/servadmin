@@ -36,44 +36,44 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	return $this->getHelpNote('admin_sites/welcome');
+	return $self->getHelpNote('admin_sites/welcome');
 }
 
-function newsite( $this )
+function newsite( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
 		// new site
-		$servid = intval($this->ajax->data->Get('servid'));
+		$servid = intval($self->ajax->data->Get('servid'));
 
-		$domain = trim($this->ajax->data->Get('domain'));
+		$domain = trim($self->ajax->data->Get('domain'));
 		$domain = strtolower($domain);
 		$domain = preg_replace('/^www\./i', '', $domain);
 
-		$username = trim($this->ajax->data->Get('username'));
+		$username = trim($self->ajax->data->Get('username'));
 		$username = strtolower($username);
 
-		$password = trim($this->ajax->data->Get('password'));
+		$password = trim($self->ajax->data->Get('password'));
 
-		$email = $this->ajax->data->Get('email');
+		$email = $self->ajax->data->Get('email');
 
 		if(! $password )
 		{
 			die("Invalid password provided ($password)");
 		}
 
-		$interface = $this->getInterface('sitedev', $servid);
+		$interface = $self->getInterface('sitedev', $servid);
 
-		if($this->domainExists( $domain ))
+		if($self->domainExists( $domain ))
 		{
 			die("That domain appears to already existing in the system ($domain)");
 		}
 
-		if($this->usernameExists( $username ))
+		if($self->usernameExists( $username ))
 		{
 			die("That username is already taken ($username)");
 		}
@@ -83,13 +83,13 @@ function newsite( $this )
 		$interface->checkFault( );
 
 		// insert the new values into the database
-		$uid = $this->addAccount(
+		$uid = $self->addAccount(
 			array(
 				'username'	=> $username,
 				'password'	=> $password,
 				'domain'	=> $domain,
 				'servid'	=> $servid,
-				'ownername'	=> $this->ajax->data->Get('ownername'),
+				'ownername'	=> $self->ajax->data->Get('ownername'),
 				'email'		=> $email
 			)
 		);
@@ -100,31 +100,31 @@ function newsite( $this )
 		}
 
 		// display the notice message
-		list($subject, $body) = $this->getWelcomeMessage( $uid,
+		list($subject, $body) = $self->getWelcomeMessage( $uid,
 				array(
 					'password' => $password,
-					'cp_url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($this->link( null, true ))
+					'cp_url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($self->link( null, true ))
 				)
 			);
 
-		$ret = $this->tableHeader("Site Created!");
+		$ret = $self->tableHeader("Site Created!");
 
-		$ret .= $this->html->form_start(
+		$ret .= $self->html->form_start(
 				array(
 					'id' => 'frmMain',
 					'name'	=> 'frmMain',
 					'action' => 'sendwelcome'
 				)
 			) .
-			$this->tableHeader("Send Welcome Letter (Optional)") .
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->tableHeader("Send Welcome Letter (Optional)") .
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'To:',
 						array('width' => 100)
 					) .
-					$this->html->td(
-						$this->html->textfield('to', 
+					$self->html->td(
+						$self->html->textfield('to', 
 							array(
 								'value'	=> $email,
 								'class'	=> 'input',
@@ -133,13 +133,13 @@ function newsite( $this )
 						)
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Subject:',
 						array('width' => 100)
 					) .
-					$this->html->td(
-						$this->html->textfield('subject', 
+					$self->html->td(
+						$self->html->textfield('subject', 
 							array(
 								'value'	=> $subject,
 								'class'	=> 'input',
@@ -148,10 +148,10 @@ function newsite( $this )
 						)
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Body:<br>' .
-						$this->html->textarea('body', 
+						$self->html->textarea('body', 
 							array(
 								'value'	=> $body,
 								'class'	=> 'input',
@@ -168,17 +168,17 @@ function newsite( $this )
 				array('class' => 'maintable')
 			) .
 			'<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Send Email', 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Send Email', 'frmMain')
 			) 
 			.
-			$this->html->form_end( );
+			$self->html->form_end( );
 
 		return $ret;
 	}
 	else
 	{
-		$servers = $this->getServerList( );
+		$servers = $self->getServerList( );
 
 		// do our own array_merge (key-safe)
 		$res_servers = array( '--Select A Server--' );
@@ -189,7 +189,7 @@ function newsite( $this )
 
 		// show html table
 		$ret = 
-			$this->html->form_start(
+			$self->html->form_start(
 				array(
 					'id'	=> 'frmMain',
 					'name'	=> 'frmMain',
@@ -197,15 +197,15 @@ function newsite( $this )
 					'onsubmit'	=> 'return findRealSubmit(this);'
 				)
 			) .
-			$this->tableHeader("Create New Site") .
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->tableHeader("Create New Site") .
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Owner Name',
 						array('width' => '50%')
 					) .
-					$this->html->td(
-						$this->html->textfield('ownername',
+					$self->html->td(
+						$self->html->textfield('ownername',
 							array(
 								'class'	=> 'input',
 								'size'	=> 30
@@ -214,12 +214,12 @@ function newsite( $this )
 						array('width' => '50%')
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Contact Email'
 					) .
-					$this->html->td(
-						$this->html->textfield('email',
+					$self->html->td(
+						$self->html->textfield('email',
 							array(
 								'class'	=> 'input',
 								'size'	=> 25 
@@ -227,12 +227,12 @@ function newsite( $this )
 						)
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Domain Name (no "www" prefix)'
 					) .
-					$this->html->td(
-						$this->html->textfield('domain',
+					$self->html->td(
+						$self->html->textfield('domain',
 							array(
 								'class'	=> 'input',
 								'size'	=> 30,
@@ -241,12 +241,12 @@ function newsite( $this )
 						)
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Username (keep it short)'
 					) .
-					$this->html->td(
-						$this->html->textfield('username',
+					$self->html->td(
+						$self->html->textfield('username',
 							array(
 								'class'	=> 'input',
 								'size'	=> 25 ,
@@ -255,12 +255,12 @@ function newsite( $this )
 						) . ' <font color="red"><span id="verifyUsernameSpan"></span></font>'
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Password'
 					) .
-					$this->html->td(
-						$this->html->textfield('password',
+					$self->html->td(
+						$self->html->textfield('password',
 							array(
 								'class'	=> 'input',
 								'size'	=> 20
@@ -268,12 +268,12 @@ function newsite( $this )
 						) . ' [ <a href="javascript:void(0)" onclick="generatePassword(\'password\')">Generate</a> ]'
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Server'
 					) .
-					$this->html->td(
-						$this->html->popup_menu('servid',
+					$self->html->td(
+						$self->html->popup_menu('servid',
 							$res_servers,
 							'',
 							array(
@@ -286,27 +286,27 @@ function newsite( $this )
 				array('class' => 'maintable')
 			) .
 			'<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Create New Site', 'frmMain', 'validateNewSite()')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Create New Site', 'frmMain', 'validateNewSite()')
 			) .
-			$this->html->form_end( );
+			$self->html->form_end( );
 
 		// execute this after the page is showing
-		$this->ajax->response['onLoad'] = '_findObj(\'ownername\').focus()';
+		$self->ajax->response['onLoad'] = '_findObj(\'ownername\').focus()';
 
 		return $ret;
 	}
 }
 
-function sendwelcome( $this )
+function sendwelcome( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
-		$to = $this->ajax->data->Get('to');
-		$subject = $this->ajax->data->Get('subject');
-		$body = $this->ajax->data->Get('body');
+		$to = $self->ajax->data->Get('to');
+		$subject = $self->ajax->data->Get('subject');
+		$body = $self->ajax->data->Get('body');
 
 		// send the email
 		// TODO -- make these values configurable!
@@ -315,7 +315,7 @@ function sendwelcome( $this )
 			"From: LedHosting.com Support <support@ledhosting.com>"
 		);
 
-		return $this->tableHeader("Email sent: site creation complete.");
+		return $self->tableHeader("Email sent: site creation complete.");
 	}
 	else
 	{
@@ -325,37 +325,37 @@ function sendwelcome( $this )
 
 // this function returns a unique username based
 // on the input domain name (initval)
-function genusername( $this )
+function genusername( $self )
 {
-	$init = $this->ajax->data->Get('initval');	
+	$init = $self->ajax->data->Get('initval');	
 
 	if(! $init )
 	{
 		die("Unable to get initial value ($init)");
 	}
 
-	$user = $this->genUsername( $init );
+	$user = $self->genUsername( $init );
 
 	return $user;
 }
 
-function verifyusername( $this )
+function verifyusername( $self )
 {
-	$user = trim($this->ajax->data->Get('username'));
+	$user = trim($self->ajax->data->Get('username'));
 
 	if(!$user)
 	{
 		die("Invalid username");
 	}
 
-	return ($this->usernameExists( $user ) ? "bad" : "good");
+	return ($self->usernameExists( $user ) ? "bad" : "good");
 }
 
-function modsites( $this )
+function modsites( $self )
 {
 	// list all fo the site
 
-	$ret = $this->tableHeader("Existing Sites");
+	$ret = $self->tableHeader("Existing Sites");
 
 	$sql = "select a.accountid, username, domain, ownername, s.servname
 			from account a
@@ -363,22 +363,22 @@ function modsites( $this )
 				join server s on (s.serverid = ac.serverid)
 			order by domain";
 
-	$res = $this->db->Execute( $sql )
-		or $this->raiseError( $this->db->ErrorMsg( ) );
+	$res = $self->db->Execute( $sql )
+		or $self->raiseError( $self->db->ErrorMsg( ) );
 
 	$tbl = '';
 	while($row = $res->FetchNextObj( ))
 	{
-		if($this->isUserAdmin( $row->username ))
+		if($self->isUserAdmin( $row->username ))
 		{
 			continue;
 		}
 
 		$tbl .=
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'D',
 						array(
@@ -388,8 +388,8 @@ function modsites( $this )
 						)
 					) . '|' .
 
-					$this->html->ahref(
-						$this->link( array('a' => 'autologin', 'id' => $row->accountid ), true ),
+					$self->html->ahref(
+						$self->link( array('a' => 'autologin', 'id' => $row->accountid ), true ),
 						'L',
 						array(
 							'onclick'	=>
@@ -397,7 +397,7 @@ function modsites( $this )
 									{ return false; }"
 						)
 					) . '|' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'M',
 						array(
@@ -407,10 +407,10 @@ function modsites( $this )
 					array('width' => 2)
 				) .
 				/*
-				$this->html->td(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
-						$this->link( array('a' => 'autologin', 'id' => $row->accountid ), true ),
+					$self->html->ahref(
+						$self->link( array('a' => 'autologin', 'id' => $row->accountid ), true ),
 						'L',
 						array(
 							'onclick'	=>
@@ -420,9 +420,9 @@ function modsites( $this )
 					) . '&nbsp;] ',
 					array('width' => 2)
 				) .
-				$this->html->td(
+				$self->html->td(
 					' [&nbsp;' .
-					$this->html->ahref(
+					$self->html->ahref(
 						'javascript:void(0)',
 						'M',
 						array(
@@ -432,13 +432,13 @@ function modsites( $this )
 					array('width' => 2)
 				) .
 				*/
-				$this->html->td(
+				$self->html->td(
 					$row->servname
 				) .
-				$this->html->td(
+				$self->html->td(
 					$row->domain
 				) .
-				$this->html->td(
+				$self->html->td(
 					$row->username
 				)
 			);
@@ -447,30 +447,30 @@ function modsites( $this )
 	if($tbl)
 	{
 		$tbl =
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'[ D|L|M ]',
 					array('class' => 'topcells')
 				) .
 				/*
-				$this->html->td(
+				$self->html->td(
 					'Login',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Mod',
 					array('class' => 'topcells')
 				) .
 				*/
-				$this->html->td(
+				$self->html->td(
 					'Server',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Domain',
 					array('class' => 'topcells')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'Username',
 					array('class' => 'topcellsRight')
 				)
@@ -478,7 +478,7 @@ function modsites( $this )
 			$tbl;
 		
 		$ret .=
-			$this->html->table(
+			$self->html->table(
 				$tbl, 
 				array('class' => 'maintable')
 			);
@@ -487,44 +487,44 @@ function modsites( $this )
 	return $ret;
 }
 
-function delsite( $this )
+function delsite( $self )
 {
-	$uid = intval($this->ajax->data->Get('extra'));
+	$uid = intval($self->ajax->data->Get('extra'));
 
 	if(! $uid )
 	{
 		die("Unable to find valid uid ($uid)");
 	}
 
-	$u = $this->userDetails( $uid );
+	$u = $self->userDetails( $uid );
 
-	if($this->isUserAdmin( $u->username ))
+	if($self->isUserAdmin( $u->username ))
 	{
 		die("attempting to delete an administrator (something seriously wrong!)");
 	}
 	
 	// remove from the server first
-	$interface = $this->getInterface( 'sitedev', $u->serverid );
+	$interface = $self->getInterface( 'sitedev', $u->serverid );
 
 	$interface->call('deleteSite', array( $u->domain, $u->username ));
 	$interface->checkFault( );
 
 	// remove from user database
-	$this->delAccount( $uid );
+	$self->delAccount( $uid );
 
-	$this->ajax->response['reloadContent'] = 'modsites';
+	$self->ajax->response['reloadContent'] = 'modsites';
 	
 	return "Site Deleted...";
 }
 
-function modsite( $this )
+function modsite( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
-	$uid = intval($this->ajax->data->Get('extra'));
+	$exec = $self->ajax->data->Get('exec');
+	$uid = intval($self->ajax->data->Get('extra'));
 
 	if(! $uid )
 	{
-		$uid = intval($this->ajax->data->Get('mod_uid'));
+		$uid = intval($self->ajax->data->Get('mod_uid'));
 
 		if(! $uid )
 		{
@@ -532,26 +532,26 @@ function modsite( $this )
 		}
 	}
 
-	$site = $this->userDetails( $uid );
+	$site = $self->userDetails( $uid );
 
 	if($exec)
 	{
 		// make requested changes
 
 		// new password?
-		if($pass = trim($this->ajax->data->Get('new_password')))
+		if($pass = trim($self->ajax->data->Get('new_password')))
 		{
-			$i = $this->getInterface( 'user', $site->serverid );
+			$i = $self->getInterface( 'user', $site->serverid );
 			/*
 			if(! $i->call('passwd', array( $site->username, $pass )) )
 			{
-				$this->raiseError("Problem with 'passwd': " . $i->getError());
+				$self->raiseError("Problem with 'passwd': " . $i->getError());
 			}
 			*/
 			$i->call('passwd', array( $site->username, $pass ));
 			$i->checkFault( );
 
-			$this->setUserDetail(
+			$self->setUserDetail(
 				'password',
 				md5($pass),
 				$uid
@@ -559,26 +559,26 @@ function modsite( $this )
 		}
 
 		// update these values no matter what
-		$this->setUserDetail(
+		$self->setUserDetail(
 			'ownername',
-			$this->ajax->data->Get('ownername'),
+			$self->ajax->data->Get('ownername'),
 			$uid
 		);
 
-		$this->setUserDetail(
+		$self->setUserDetail(
 			'email',
-			$this->ajax->data->Get('email'),
+			$self->ajax->data->Get('email'),
 			$uid
 		);
 		
-		$this->ajax->response['reloadContent'] = 'modsites';
+		$self->ajax->response['reloadContent'] = 'modsites';
 
 		return "Changes saved...";
 	}
 	else
 	{
 
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 			array(
 				'id'	=> 'frmMain',
 				'name'	=> 'frmMain',
@@ -586,18 +586,18 @@ function modsite( $this )
 				'onsubmit'	=> 'return findRealSubmit(this);'
 			)
 		) .
-		$this->html->hidden('mod_uid', array('value' => $uid));
+		$self->html->hidden('mod_uid', array('value' => $uid));
 
-		$ret .= $this->tableHeader("Modify Site: [$site->domain]");
+		$ret .= $self->tableHeader("Modify Site: [$site->domain]");
 
 		$ret .=
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Owner Name:'
 					) .
-					$this->html->td(
-						$this->html->textfield('ownername',
+					$self->html->td(
+						$self->html->textfield('ownername',
 							array(
 								'class'	=> 'input',
 								'size'	=> 30,
@@ -606,12 +606,12 @@ function modsite( $this )
 						)
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Contact Email:'
 					) .
-					$this->html->td(
-						$this->html->textfield('email',
+					$self->html->td(
+						$self->html->textfield('email',
 							array(
 								'class'	=> 'input',
 								'size'	=> 30,
@@ -620,28 +620,28 @@ function modsite( $this )
 						)
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Domain:'
 					) .
-					$this->html->td(
+					$self->html->td(
 						$site->domain
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Username:'
 					) .
-					$this->html->td(
+					$self->html->td(
 						$site->username
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'New Password:'
 					) .
-					$this->html->td(
-						$this->html->textfield('new_password',
+					$self->html->td(
+						$self->html->textfield('new_password',
 							array(
 								'class'	=> 'input',
 								'size'	=> 20
@@ -649,11 +649,11 @@ function modsite( $this )
 						) 
 					)
 				) .
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'Server:'
 					) .
-					$this->html->td(
+					$self->html->td(
 						$site->servname
 					) 
 				) ,
@@ -661,10 +661,10 @@ function modsite( $this )
 			);
 
 		$ret .= '<hr size=1>' .
-				$this->tableHeader(
-					$this->ajaxSubmitButton('Save Changes', 'frmMain')
+				$self->tableHeader(
+					$self->ajaxSubmitButton('Save Changes', 'frmMain')
 				) .
-				$this->html->form_end( );
+				$self->html->form_end( );
 
 		return $ret;
 	}

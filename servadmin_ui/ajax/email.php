@@ -24,30 +24,30 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	//$ret = $this->wizardLink('email');
-	$ret .= $this->getHelpNote('email/welcome');
+	//$ret = $self->wizardLink('email');
+	$ret .= $self->getHelpNote('email/welcome');
 
 	return $ret;
 }
 
-function modusers( $this )
+function modusers( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
-	$u = $this->userDetails( );
-	$interface = $this->getInterface('mail');
+	$u = $self->userDetails( );
+	$interface = $self->getInterface('mail');
 
 	if($exec)
 	{
 		// executing
-		//var_dump($this->ajax->data);
+		//var_dump($self->ajax->data);
 		//die("did submit");
-		$keys = $this->ajax->data->Keys( );
+		$keys = $self->ajax->data->Keys( );
 
-		if($user = $this->ajax->data->Get('new_address')
-			and $pass = $this->ajax->data->Get('new_password')
+		if($user = $self->ajax->data->Get('new_address')
+			and $pass = $self->ajax->data->Get('new_password')
 		)
 		{
 			//die("user: $user");
@@ -56,11 +56,11 @@ function modusers( $this )
 		}
 
 		// changed passwords?
-		foreach($this->matchKeys( $keys, '/^newpass_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^newpass_(.*)$/' ) as $k)
 		{
 			// change password
 			$key = 'newpass_' . $k;
-			if($pass = $this->ajax->data->Get($key))
+			if($pass = $self->ajax->data->Get($key))
 			{
 				$pass = trim($pass);
 
@@ -70,7 +70,7 @@ function modusers( $this )
 		}
 
 		// deleted users?
-		foreach($this->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
 		{
 			if($k)
 			{
@@ -80,7 +80,7 @@ function modusers( $this )
 		}
 
 		// this tells it to reload the page (right side) with something
-		$this->ajax->response['reloadContent'] = 'modusers';
+		$self->ajax->response['reloadContent'] = 'modusers';
 
 		return "Completed...";
 	}
@@ -97,11 +97,11 @@ function modusers( $this )
 			foreach($res as $user)
 			{
 				//$ret .= sprintf("%s@%s<br>", $user, $u->domain);
-				$tbl .= $this->html->tr(
-					$this->html->td(
+				$tbl .= $self->html->tr(
+					$self->html->td(
 						($user == 'postmaster' ?
-							$this->html->checkbox('', 0, false, array('disabled' => 1)) :
-							$this->html->checkbox('del_' . $user, 1, false,
+							$self->html->checkbox('', 0, false, array('disabled' => 1)) :
+							$self->html->checkbox('del_' . $user, 1, false,
 								array(
 									'onclick'	=> 
 										'if(this.checked) { return confirm(\'Are you sure you want to delete this user?\') }'
@@ -110,12 +110,12 @@ function modusers( $this )
 						),
 						array('width' => 0)
 					) .
-					$this->html->td(
+					$self->html->td(
 						sprintf("%s@%s", $user, $u->domain),
 						array('width' => '50%')
 					) .
-					$this->html->td(
-						$this->html->password_field('newpass_' . $user, 
+					$self->html->td(
+						$self->html->password_field('newpass_' . $user, 
 							array(
 								'class' => 'input'
 							)
@@ -129,57 +129,57 @@ function modusers( $this )
 			{
 				// header
 				$tbl = 
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'DEL&nbsp;',	
 						array('width' => 0, 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Email Account',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'New Passowrd',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					)
 				) . $tbl;
 
-				$tbl = $this->html->table(
+				$tbl = $self->html->table(
 					$tbl,
 					array('class' => 'maintable')
 				);
 			}
 			
-			$ret .= $this->tableHeader("Existing Email Accounts") . $tbl . '<hr size=1>';
+			$ret .= $self->tableHeader("Existing Email Accounts") . $tbl . '<hr size=1>';
 		}
 
 		// new accounts
 		$ret .=
-			$this->tableHeader("New Email Account");
+			$self->tableHeader("New Email Account");
 
 		$ret .=
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Email Address',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Password',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
-						$this->html->textfield('new_address', 
+				$self->html->tr(
+					$self->html->td(
+						$self->html->textfield('new_address', 
 							array(
 								'class' => 'input',
 								'size'	=> '10'
 							)
 						) . '@' . $u->domain
 					) .
-					$this->html->td(
-						$this->html->password_field('new_password',
+					$self->html->td(
+						$self->html->password_field('new_password',
 							array(
 								'class'	=> 'input',
 								'size'	=> '30'
@@ -192,12 +192,12 @@ function modusers( $this )
 
 		// submit button
 		$ret .= '<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Save Changes', 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Save Changes', 'frmMain')
 			);
 
 		// wrap it in a form
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 					array(
 						'name'	=> 'frmMain',
 						'id'	=> 'frmMain',
@@ -205,25 +205,25 @@ function modusers( $this )
 						'onsubmit'	=> 'return findRealSubmit(this);'
 					)
 				) . $ret .
-				$this->html->form_end( );
+				$self->html->form_end( );
 
 		return $ret;
 	}
 }
 
-function defaultAddress( $this )
+function defaultAddress( $self )
 {
-	$u = $this->userDetails( );
-	$interface = $this->getInterface( "mail" );
+	$u = $self->userDetails( );
+	$interface = $self->getInterface( "mail" );
 
 	// is executing?
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
-		$addr = trim($this->ajax->data->Get('catchall'));
+		$addr = trim($self->ajax->data->Get('catchall'));
 
-		if($this->ajax->data->Get('nocatchall')
+		if($self->ajax->data->Get('nocatchall')
 			|| empty($addr))
 		{
 			// set to false
@@ -238,7 +238,7 @@ function defaultAddress( $this )
 			die("Unable to set default (unknown reason)");
 		}
 
-		$this->ajax->response['reloadContent'] = 'defaultaddress';
+		$self->ajax->response['reloadContent'] = 'defaultaddress';
 
 		return "Completed...";
 	}
@@ -247,7 +247,7 @@ function defaultAddress( $this )
 		$res = $interface->call('catchAll', array( $u->domain ));
 		$interface->checkFault( );
 
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 			array(
 				'id'	=> 'frmMain',
 				'name'	=> 'frmMain',
@@ -255,14 +255,14 @@ function defaultAddress( $this )
 				'onsubmit'	=> 'return findRealSubmit(this);'
 			)
 		) .
-		$this->tableHeader("Default Address Management") .
+		$self->tableHeader("Default Address Management") .
 		// '<hr size=1>' .
-		// $this->getHelpNote('email/catchall') .
-		$this->html->table(
-			$this->html->tr(
-				$this->html->td(
+		// $self->getHelpNote('email/catchall') .
+		$self->html->table(
+			$self->html->tr(
+				$self->html->td(
 					'Unrouted emails to go: ' .
-					$this->html->textfield('catchall',
+					$self->html->textfield('catchall',
 						array(
 							'value'	=> $res,
 							'size'	=> 25,
@@ -273,9 +273,9 @@ function defaultAddress( $this )
 					),
 					array('align' => 'center')
 				) .
-				$this->html->td(
+				$self->html->td(
 					'No Default Address ' .
-					$this->html->checkbox('nocatchall', 1,
+					$self->html->checkbox('nocatchall', 1,
 						($res ? false : true),
 						array(
 							'onclick'	=> 'if(this.checked) { _findObj(\'catchall\').value = \'\'; }'
@@ -285,31 +285,31 @@ function defaultAddress( $this )
 			),
 			array('class' => 'maintable')
 		) . '<hr size=1>' .
-		$this->tableHeader(
-			$this->ajaxSubmitButton('Save Changes', 'frmMain')
+		$self->tableHeader(
+			$self->ajaxSubmitButton('Save Changes', 'frmMain')
 		)
-		. $this->html->form_end( );
+		. $self->html->form_end( );
 
 		return $ret;
 	}
 }
 
-function forwards( $this )
+function forwards( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
-	$u = $this->userDetails( );
-	$interface = $this->getInterface('mail');
+	$u = $self->userDetails( );
+	$interface = $self->getInterface('mail');
 
 	if($exec)
 	{
 		// executing
-		//var_dump($this->ajax->data);
+		//var_dump($self->ajax->data);
 		//die("did submit");
-		$keys = $this->ajax->data->Keys( );
+		$keys = $self->ajax->data->Keys( );
 
-		if($user = $this->ajax->data->Get('new_forward')
-			and $list = $this->ajax->data->Get('new_forward_list')
+		if($user = $self->ajax->data->Get('new_forward')
+			and $list = $self->ajax->data->Get('new_forward_list')
 		)
 		{
 			//die("user: $user : $list");
@@ -330,20 +330,20 @@ function forwards( $this )
 		}
 
 		// change users?
-		foreach($this->matchKeys( $keys, '/^changed_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^changed_(.*)$/' ) as $k)
 		{
 			// value not set t 1
-			if($this->ajax->data->Get('changed_' . $k ) != '1')
+			if($self->ajax->data->Get('changed_' . $k ) != '1')
 			{
 				continue;
 			}
 
 			// which user set?
 			$key = 'users_' . $k;
-			$list = $this->ajax->data->Get($key);
+			$list = $self->ajax->data->Get($key);
 
 			// are we just going to delete it anyway?
-			if(! $this->ajax->data->Get('del_' . $k ) )
+			if(! $self->ajax->data->Get('del_' . $k ) )
 			{
 				// delete it first, then recreate it
 				$interface->call('delUserAlias', array( $u->domain, $k ));
@@ -366,7 +366,7 @@ function forwards( $this )
 		}
 
 		// delete alias
-		foreach($this->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
+		foreach($self->matchKeys( $keys, '/^del_(.*)$/' ) as $k)
 		{
 			if($k)
 			{
@@ -377,7 +377,7 @@ function forwards( $this )
 		}
 
 		// this tells it to reload the page (right side) with something
-		$this->ajax->response['reloadContent'] = 'forwards';
+		$self->ajax->response['reloadContent'] = 'forwards';
 
 		return "Completed...";
 	}
@@ -396,9 +396,9 @@ function forwards( $this )
 			foreach($res as $user => $list)
 			{
 				//$ret .= sprintf("%s@%s<br>", $user, $u->domain);
-				$tbl .= $this->html->tr(
-					$this->html->td(
-						$this->html->checkbox('del_' . $user, 1, false,
+				$tbl .= $self->html->tr(
+					$self->html->td(
+						$self->html->checkbox('del_' . $user, 1, false,
 							array(
 								'onclick'	=> 
 									'if(this.checked) { return confirm(\'Are you sure you want to delete this alias?\') }'
@@ -406,12 +406,12 @@ function forwards( $this )
 						),
 						array('width' => 0)
 					) .
-					$this->html->td(
+					$self->html->td(
 						sprintf("%s@%s", $user, $u->domain),
 						array('width' => '50%')
 					) .
-					$this->html->td(
-						$this->html->textarea('users_' . $user,
+					$self->html->td(
+						$self->html->textarea('users_' . $user,
 							array(
 								'class'	=> 'input',
 								'value'	=> implode("\n", $list) ,
@@ -421,7 +421,7 @@ function forwards( $this )
 							)
 						) .
 						// hidden field for 'changes' to the aliases lists
-						$this->html->hidden('changed_' . $user,
+						$self->html->hidden('changed_' . $user,
 							array(
 								'value'	=> 0
 							)
@@ -436,57 +436,57 @@ function forwards( $this )
 			{
 				// header
 				$tbl = 
-				$this->html->tr(
-					$this->html->td(
+				$self->html->tr(
+					$self->html->td(
 						'DEL&nbsp;',	
 						array('width' => 0, 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Email Forward',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Forward List',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					)
 				) . $tbl;
 
-				$tbl = $this->html->table(
+				$tbl = $self->html->table(
 					$tbl,
 					array('class' => 'maintable')
 				);
 			}
 			
-			$ret .= $this->tableHeader("Existing Email Forwards") . $tbl . '<hr size=1>';
+			$ret .= $self->tableHeader("Existing Email Forwards") . $tbl . '<hr size=1>';
 		}
 
 		// new accounts
 		$ret .=
-			$this->tableHeader("New Email Forward");
+			$self->tableHeader("New Email Forward");
 
 		$ret .=
-			$this->html->table(
-				$this->html->tr(
-					$this->html->td(
+			$self->html->table(
+				$self->html->tr(
+					$self->html->td(
 						'Email Address',
 						array('width' => '50%', 'class' => 'topcells')
 					) .
-					$this->html->td(
+					$self->html->td(
 						'Forward To (list)',
 						array('width' => '50%', 'class' => 'topcellsRight')
 					) 
 				) .
-				$this->html->tr(
-					$this->html->td(
-						$this->html->textfield('new_forward', 
+				$self->html->tr(
+					$self->html->td(
+						$self->html->textfield('new_forward', 
 							array(
 								'class' => 'input',
 								'size'	=> '10'
 							)
 						) . '@' . $u->domain
 					) .
-					$this->html->td(
-						$this->html->textarea('new_forward_list',
+					$self->html->td(
+						$self->html->textarea('new_forward_list',
 							array(
 								'class'	=> 'input',
 								'cols'	=> 35,
@@ -500,12 +500,12 @@ function forwards( $this )
 
 		// submit button
 		$ret .= '<hr size=1>' .
-			$this->tableHeader(
-				$this->ajaxSubmitButton('Save Changes', 'frmMain')
+			$self->tableHeader(
+				$self->ajaxSubmitButton('Save Changes', 'frmMain')
 			);
 
 		// wrap it in a form
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 					array(
 						'name'	=> 'frmMain',
 						'id'	=> 'frmMain',
@@ -513,7 +513,7 @@ function forwards( $this )
 						'onsubmit'	=> 'return findRealSubmit(this);'
 					)
 				) . $ret .
-				$this->html->form_end( );
+				$self->html->form_end( );
 
 		return $ret;
 	}

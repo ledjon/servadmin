@@ -25,23 +25,23 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function welcome( $this )
+function welcome( $self )
 {
-	return $this->getHelpNote('support/welcome');
+	return $self->getHelpNote('support/welcome');
 }
 
-function newticket( $this )
+function newticket( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
 	if($exec)
 	{
 		// save ticket
-		if($topic = $this->ajax->data->Get('topic')
-			and $content = $this->ajax->data->Get('content'))
+		if($topic = $self->ajax->data->Get('topic')
+			and $content = $self->ajax->data->Get('content'))
 		{
-			$u = $this->userDetails( );
-			$support = new SupportSystem( $this );
+			$u = $self->userDetails( );
+			$support = new SupportSystem( $self );
 			$tid = $support->newTicket( $u->accountid );
 
 			if(! $tid )
@@ -62,27 +62,27 @@ function newticket( $this )
 	else
 	{
 		// show form for new ticket
-		$ret = $this->html->form_start(
+		$ret = $self->html->form_start(
 			array(
 				'id'	=> 'frmMain',
 				'name'	=> 'frmMain',
 				'action'	=> 'newticket'
 			)
 		) .
-		$this->tableHeader("Create New Support Ticket") .
-		$this->html->table(
-			$this->html->tr(
-				$this->html->td(
+		$self->tableHeader("Create New Support Ticket") .
+		$self->html->table(
+			$self->html->tr(
+				$self->html->td(
 					'Ticket Subject:'
 				) . 
-				$this->html->td(
-					$this->html->textfield('topic', array('class' => 'input', 'size' => 40))
+				$self->html->td(
+					$self->html->textfield('topic', array('class' => 'input', 'size' => 40))
 				)
 			) .
-			$this->html->tr(
-				$this->html->td(
+			$self->html->tr(
+				$self->html->td(
 					'Ticket Body:<br>' .
-					$this->html->textarea(
+					$self->html->textarea(
 						'content',
 						array(
 							'cols'	=> 50,
@@ -99,22 +99,22 @@ function newticket( $this )
 			array('class' => 'maintable')
 		) .
 		'<hr size=1>' .
-		$this->tableHeader(
-			$this->ajaxSubmitButton('Save Ticket', 'frmMain')
+		$self->tableHeader(
+			$self->ajaxSubmitButton('Save Ticket', 'frmMain')
 		);
 
 		return $ret;
 	}
 }
 
-function oldtickets( $this )
+function oldtickets( $self )
 {
 	/*
-	$res = $this->db->Execute("select * from support_ticket where ticketstatus = 'open'")
-			or $this->raiseError( $this->db->ErrorMsg( ) );
+	$res = $self->db->Execute("select * from support_ticket where ticketstatus = 'open'")
+			or $self->raiseError( $self->db->ErrorMsg( ) );
 	*/
-	$u = $this->userDetails( );
-	$support = new SupportSystem( $this );
+	$u = $self->userDetails( );
+	$support = new SupportSystem( $self );
 	$tickets = $support->getTickets( $u->accountid );
 
 	//var_dump($tickets);
@@ -122,15 +122,15 @@ function oldtickets( $this )
 	$tbl = '';
 	foreach($tickets as $t)
 	{
-		$tbl .= $this->html->tr(
-			$this->html->td(
+		$tbl .= $self->html->tr(
+			$self->html->td(
 				$t->ticketid
 			) .
-			$this->html->td(
+			$self->html->td(
 				$t->createdate
 			) .
-			$this->html->td(
-				$this->html->ahref(
+			$self->html->td(
+				$self->html->ahref(
 					'javascript:void(0)',
 					$t->topic,
 					array(
@@ -145,16 +145,16 @@ function oldtickets( $this )
 	{
 		// headers
 		$tbl =
-		$this->html->tr(
-			$this->html->td(
+		$self->html->tr(
+			$self->html->td(
 				'#',
 				array('width' => 2, 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'Date',
 				array('width' => '5', 'class' => 'topcells')
 			) .
-			$this->html->td(
+			$self->html->td(
 				'Subject',
 				array('width' => '370', 'class' => 'topcellsRight')
 			) 
@@ -163,7 +163,7 @@ function oldtickets( $this )
 	}
 
 	// wrap it in table
-	$ret = $this->html->table(
+	$ret = $self->html->table(
 		$tbl,
 		array('class' => 'maintable')
 	);
@@ -171,11 +171,11 @@ function oldtickets( $this )
 	return $ret;
 }
 
-function viewticket( $this )
+function viewticket( $self )
 {
-	$exec = $this->ajax->data->Get('exec');
+	$exec = $self->ajax->data->Get('exec');
 
-	$tid = $this->ajax->data->Get('extra');
+	$tid = $self->ajax->data->Get('extra');
 	$ptid = $tid;
 
 	if(stristr($tid, '-'))
@@ -191,8 +191,8 @@ function viewticket( $this )
 		die("Invalid ticketid: " . $ptid);
 	}
 
-	$u = $this->userDetails( );
-	$support = new SupportSystem( $this );
+	$u = $self->userDetails( );
+	$support = new SupportSystem( $self );
 
 	if($exec)
 	{

@@ -22,9 +22,9 @@
 	
 	$this->ajax->response['content'] = $res;
 
-function wizard_Email( $this )
+function wizard_Email( $self )
 {
-	//return var_export($this->template);
+	//return var_export($self->template);
 
 	return "wizard page yet to come";
 }
