@@ -173,7 +173,7 @@ function myusers( $self )
 							array(
 								'class' => 'input',
 								'size'	=> '10',
-								'maxlength'	=> (13 - strlen($u->username))
+								'maxlength'	=> (16-1 - strlen($u->username)) // 16 = max, -1 = _ in username
 							)
 						)
 					) .
