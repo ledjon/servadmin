@@ -1,6 +1,8 @@
 <?
+	define('MAIL_SERVER', 'vpostmail');
+	
 	require('core.php');
-
+	
 	$mail = new ServerAdminMail;
 	
 	$domain = 'qwerty.com';
